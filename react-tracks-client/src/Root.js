@@ -13,7 +13,7 @@ const Root=() => (<Query query={GET_TRACK_LIST}>
 </Query>)
 
 const GET_TRACK_LIST=gql`
-{
+{ 
   tracks{
     id
     title
