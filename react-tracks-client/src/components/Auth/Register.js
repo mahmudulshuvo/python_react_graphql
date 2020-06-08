@@ -17,11 +17,23 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Slide from "@material-ui/core/Slide";
 import Gavel from "@material-ui/icons/Gavel";
 import VerifiedUserTwoTone from "@material-ui/icons/VerifiedUserTwoTone";
+import Error from "../Shared/Error";
 
-const Register=({classes}) => {
+
+function Transition(props) {
+  return <Slide direction="up" {...props} />
+}
+
+const Register=({classes, setNewUser}) => {
   const [username, setUsername]=useState("")
   const [email, setEmail]=useState("")
   const [password, setPassword]=useState("")
+  const [open, setOpen] = useState(false)
+
+  const handleSubmit= (event, createUser) => {
+    event.preventDefault()
+    createUser()
+  }
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -32,10 +44,16 @@ const Register=({classes}) => {
           Register
         </Typography>
 
-        <Mutation mutation={REGISTER_MUTATION}>
-          {()=>{
+        <Mutation mutation={REGISTER_MUTATION}
+          variables={{username, email, password}}
+          onCompleted={data => {
+            setOpen(true)
+            console.log(data)
+          }}
+        >
+          {(createUser, {loading, error})=>{
             return(
-              <form>
+              <form onSubmit={(event) => handleSubmit(event, createUser)}>
                 <FormControl margin="normal" required fullWidth>
                   <InputLabel htmlFor="username">Username</InputLabel>
                   <Input id="username" onChange={(event) => setUsername(event.target.value)} />
@@ -56,29 +74,46 @@ const Register=({classes}) => {
                   fullWidth
                   variant="contained"
                   color="secondary"
+                  disabled={loading || !username.trim() || !email.trim() || !password.trim()}
                 >
-                  Register
+                  {loading ? "Registering...." : "Register"}
                 </Button>
 
                 <Button
                   color="primary"
                   variant="outlined"
                   fullWidth
+                  onClick={() => setNewUser(false)}
                 >
                   Previous user? Login
                 </Button>
+
+                {/* Display error div */}
+                {error && <Error error={error} />}
               </form>
              
             )
           }}
         </Mutation>
       </Paper>
+
+      <Dialog disableBackdropClick={true} open={open} TransitionComponent={Transition}>
+        <DialogTitle><VerifiedUserTwoTone className={classes.icon} />New user</DialogTitle>
+        <DialogContent>
+          <DialogContentText>User successfully created!</DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button color="primary" onClick={() => setNewUser(false)}>
+            Login
+          </Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 };
 
 const REGISTER_MUTATION=gql`
-mutation ($username: String!, $password: String!, $email: String!){
+mutation ($username: String, $password: String!, $email: String!){
   createUser(email:$email, username:$username, password:$password) {
     user {
       id
