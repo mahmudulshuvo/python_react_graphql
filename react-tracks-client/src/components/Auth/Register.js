@@ -113,7 +113,7 @@ const Register=({classes, setNewUser}) => {
 };
 
 const REGISTER_MUTATION=gql`
-mutation ($username: String, $password: String!, $email: String!){
+mutation ($username: String!, $password: String!, $email: String!){
   createUser(email:$email, username:$username, password:$password) {
     user {
       id
