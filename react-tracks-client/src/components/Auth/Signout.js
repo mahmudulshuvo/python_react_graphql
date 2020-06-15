@@ -1,20 +1,33 @@
 import React from "react";
+import {ApolloConsumer} from 'react-apollo';
 import withStyles from "@material-ui/core/styles/withStyles";
 import ExitToApp from "@material-ui/icons/ExitToApp";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 
-const Signout = ({ classes }) => {
+const Signout=({classes}) => {
+  
+  const handleSingout=client => {
+    localStorage.removeItem('authToken')
+    client.writeData({data: {isLoggedIn: false}})
+    console.log('Signed out user ', client)
+  }
+
   return (
-    <Button>
-      <Typography
-        variant="body1"
-        className={classes.buttonText}
-        color="secondary"
-      >
-        Signout
-      </Typography>
-    </Button>
+    <ApolloConsumer>
+      {client => (
+        <Button>
+          <Typography
+            variant="body1"
+            className={classes.buttonText}
+            color="secondary"
+            onClick= {() => handleSingout(client)}
+          >
+            Signout
+          </Typography>
+        </Button>
+      )}
+    </ApolloConsumer>
   );
 };
 
