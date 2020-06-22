@@ -17,6 +17,7 @@ import AddIcon from "@material-ui/icons/Add";
 import ClearIcon from "@material-ui/icons/Clear";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import Error from '../Shared/Error';
+import {GET_TRACKS_QUERY} from '../../pages/App.js';
 
 const CreateTrack=({classes}) => {
   const [open, setOpen]=useState(false)
@@ -69,6 +70,7 @@ const CreateTrack=({classes}) => {
           setSubmitting(false)
           setOpen(false)
         }}
+        refetchQueries={() => [{query: GET_TRACKS_QUERY}]}
       >
         {(createTrack, {loading, error}) => {
           if (error) return <Error error={error} />
