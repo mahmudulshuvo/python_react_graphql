@@ -25,10 +25,18 @@ const CreateTrack=({classes}) => {
   const [description, setDescription]=useState("")
   const [file, setFile]=useState("")
   const [submitting, setSubmitting]=useState(false)
+  const [fileError, setFileError]=useState("")
 
   const handleAudioChange=event=>{
     const selectedFile=event.target.files[0]
-    setFile(selectedFile)
+    const fileSizeLimit=10000000 //10MB
+    if (selectedFile && selectedFile.size>fileSizeLimit) {
+      setFileError(`${selectedFile.name}: File size is too large.`)
+    }
+    else {
+      setFile(selectedFile)
+      setFileError("")
+    }
   }
 
   const handleAudioUpload=async () => {
@@ -69,6 +77,8 @@ const CreateTrack=({classes}) => {
           console.log(data)
           setSubmitting(false)
           setOpen(false)
+          setTitle("")
+          setDescription("")
         }}
         refetchQueries={() => [{query: GET_TRACKS_QUERY}]}
       >
@@ -81,7 +91,7 @@ const CreateTrack=({classes}) => {
                 <DialogTitle>Create Track</DialogTitle>
                 <DialogContent>
                   <DialogContentText>
-                    Add a Title, Description & Audio File
+                    Add a Title, Description & Audio File (Under 10MB)
                   </DialogContentText>
                   <FormControl fullWidth>
                     <TextField
@@ -89,6 +99,7 @@ const CreateTrack=({classes}) => {
                       placeholder="Add Title"
                       onChange={event => setTitle(event.target.value)}
                       className={classes.textField}
+                      value={title}
                     />
                   </FormControl>
                   <FormControl fullWidth>
@@ -99,9 +110,10 @@ const CreateTrack=({classes}) => {
                       rows="4"
                       multiline
                       onChange={event => setDescription(event.target.value)}
+                      value={description}
                     />
                   </FormControl>
-                  <FormControl fullWidth>
+                  <FormControl fullWidth error={Boolean(fileError)}>
                     <input
                       id="audio"
                       required
@@ -116,9 +128,10 @@ const CreateTrack=({classes}) => {
                         Audio file
                         <LibraryMusicIcon className={classes.icon} />
                       </Button>
-                      {file && file.name}
+                      {file&&file.name}
+                      <FormHelperText>{fileError}</FormHelperText>
                     </label>
-                  </FormControl>
+                  </FormControl> 
                 </DialogContent>
                 <DialogActions>
                   <Button disabled={submitting} onClick={() => setOpen(false)} className={classes.cancel}>
