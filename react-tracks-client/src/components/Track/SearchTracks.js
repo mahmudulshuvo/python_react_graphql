@@ -12,7 +12,7 @@ const SearchTracks=({classes, setSearchResults}) => {
   const [search, setSearch]=useState("")
   const inputEl = useRef()
   
-  const clearSearchResults = () => {
+  const clearSearchInput = () => {
     setSearchResults([])
     setSearch("")
     inputEl.current.focus()
@@ -32,7 +32,7 @@ const SearchTracks=({classes, setSearchResults}) => {
         <form onSubmit={event => handleSubmit(event, client)}>
           <Paper className={classes.root} elevation={1}>
             <IconButton>
-              <ClearIcon onClick={clearSearchResults} />
+              <ClearIcon onClick={clearSearchInput} />
             </IconButton>
             <TextField
               fullWidth

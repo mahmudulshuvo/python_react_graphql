@@ -39,7 +39,7 @@ const TrackList=({classes, tracks}) => (
           </Typography>
         </ExpansionPanelDetails>
         <ExpansionPanelActions>
-          <UpdateTrack />
+          <UpdateTrack track={track}/>
           <DeleteTrack />
          </ExpansionPanelActions>
       </ExpansionPanel>
