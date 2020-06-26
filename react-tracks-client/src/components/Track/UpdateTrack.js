@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useState, useContext} from "react";
 import axios from 'axios';
 import {Mutation} from "react-apollo";
 import {gql} from 'apollo-boost';
@@ -17,14 +17,18 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 import LibraryMusicIcon from "@material-ui/icons/LibraryMusic";
 import Error from '../Shared/Error';
+import {UserContext} from '../../Root';
 
 const UpdateTrack=({classes, track}) => {
+  const currentUser = useContext(UserContext) 
   const [open, setOpen]=useState(false)
   const [title, setTitle]=useState(track.title)
   const [description, setDescription]=useState(track.description)
   const [file, setFile]=useState("")
   const [submitting, setSubmitting]=useState(false)
   const [fileError, setFileError]=useState("")
+  const isCurrentUser = currentUser.id === track.postedBy.id
+  console.log({currentUser})
 
   const handleAudioChange=event => {
     const selectedFile=event.target.files[0]
@@ -62,7 +66,7 @@ const UpdateTrack=({classes, track}) => {
     updateTrack({variables: {trackId: track.id ,title, description, url: uploadedUrl}})
   }
 
-  return (
+  return isCurrentUser && (
     <Fragment>
       {/* Update Track Button */}
       <IconButton onClick={() => setOpen(true)}>
