@@ -27,8 +27,7 @@ const UpdateTrack=({classes, track}) => {
   const [file, setFile]=useState("")
   const [submitting, setSubmitting]=useState(false)
   const [fileError, setFileError]=useState("")
-  const isCurrentUser = currentUser.id === track.postedBy.id
-  console.log({currentUser})
+  const isCurrentUser=currentUser.id===track.postedBy.id
 
   const handleAudioChange=event => {
     const selectedFile=event.target.files[0]
