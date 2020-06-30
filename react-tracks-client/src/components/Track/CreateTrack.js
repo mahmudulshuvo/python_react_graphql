@@ -63,6 +63,12 @@ const CreateTrack=({classes}) => {
     createTrack({variables: {title, description, url: uploadedUrl}})
   }
 
+  const handleUpdateCache=(cache, {data: {createTrack}}) => {
+    const data=cache.readQuery({query: GET_TRACKS_QUERY})
+    const tracks = data.tracks.concat(createTrack.track)
+    cache.writeQuery({ query: GET_TRACKS_QUERY, data: {tracks}})
+  }
+
   return (
     <Fragment>
       {/* Create Track Button */}
@@ -80,7 +86,8 @@ const CreateTrack=({classes}) => {
           setTitle("")
           setDescription("")
         }}
-        refetchQueries={() => [{query: GET_TRACKS_QUERY}]}
+        update={handleUpdateCache}
+        // refetchQueries={() => [{query: GET_TRACKS_QUERY}]}
       >
         {(createTrack, {loading, error}) => {
           if (error) return <Error error={error} />
@@ -158,6 +165,13 @@ const CREATE_TRACK_MUTATION=gql`
         title
         description
         url
+        Likes {
+          id
+        }
+        postedBy {
+          id
+          username
+        }
       }
     }
   }
