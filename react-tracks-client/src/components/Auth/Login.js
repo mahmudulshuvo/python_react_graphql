@@ -17,7 +17,6 @@ const Login=({classes, setNewUser}) => {
   
   const [username, setUsername]=useState("")
   const [password, setPassword]=useState("")
-  const [open, setOpen]=useState(false)
 
   const handleSubmit=async (event, tokenAuth, client) => {
     event.preventDefault()
